@@ -1,6 +1,6 @@
 namespace FormatConverter.Models.Scraper;
 
-public class Round : IRound
+public class Round : IRound<Performance>
 {
     public string Name { get; set; }
     public DateOnly Date { get; set; }

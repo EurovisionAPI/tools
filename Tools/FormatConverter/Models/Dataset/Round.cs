@@ -2,7 +2,7 @@ using FormatConverter.Models.Scraper;
 
 namespace FormatConverter.Models.Dataset;
 
-public class Round : IRound
+public class Round : IRound<Performance>
 {
     public string Name { get; set; }
     public DateOnly Date { get; set; }

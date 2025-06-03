@@ -10,7 +10,7 @@ internal class Program
         Properties.ReadArguments(args);
 
         Transformer transformer = new Transformer();
-        transformer.ToDatasetFormat("eurovision.json", "senior");
+        //transformer.ToDatasetFormat("eurovision.json", "senior");
         transformer.ToDatasetFormat("junior.json", "junior");
     }
 }

@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using FormatConverter.Utilities;
 using Dataset = FormatConverter.Models.Dataset;
 using Scraper = FormatConverter.Models.Scraper;
 
@@ -15,6 +14,18 @@ internal class Transformer
     private const string LYRICS_FOLDER_NAME = "lyrics";
     private const string ROUNDS_FOLDER_NAME = "rounds";
 
+    private static readonly JsonSerializerOptions READ_JSON_OPTIONS = new JsonSerializerOptions()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
+    private static readonly JsonSerializerOptions WRITE_JSON_OPTIONS = new JsonSerializerOptions()
+    {
+        WriteIndented = true,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public void ToDatasetFormat(string contestsFile, string folderName)
     {
         Scraper.Contest[] contests = ReadContests(contestsFile);
@@ -27,13 +38,8 @@ internal class Transformer
     }
     private static Scraper.Contest[] ReadContests(string fileName)
     {
-        JsonSerializerOptions serializerOptions = new JsonSerializerOptions()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
         string json = File.ReadAllText(fileName);
-        Scraper.Contest[] contests = JsonSerializer.Deserialize<Scraper.Contest[]>(json, serializerOptions);
+        Scraper.Contest[] contests = JsonSerializer.Deserialize<Scraper.Contest[]>(json, READ_JSON_OPTIONS);
 
         return contests;
     }
@@ -138,7 +144,7 @@ internal class Transformer
             Scraper.LyricsType.Translation or _ => "t"
         };
 
-        List<object> fileNameParts = new List<object>();
+        List<object> fileNameParts = [type];
 
         if (lyrics.Languages != null && lyrics.Languages.Length > 0)
             fileNameParts.Add(string.Join(",", lyrics.Languages));
@@ -190,14 +196,7 @@ internal class Transformer
 
     private void Save<T>(T data, DirectoryInfo folder, string fileName)
     {
-        JsonSerializerOptions serializerOptions = new JsonSerializerOptions()
-        {
-            WriteIndented = true,
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, //JavaScriptEncoder.Create(UnicodeRanges.All),
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        string json = JsonSerializer.Serialize(data, serializerOptions);
+        string json = JsonSerializer.Serialize(data, WRITE_JSON_OPTIONS);
         Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
         File.WriteAllText(Path.Combine(folder.FullName, fileName + ".json"), json, encoding);
     }
