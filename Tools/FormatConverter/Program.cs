@@ -1,17 +1,23 @@
+using System.Diagnostics;
 using System.Globalization;
+using FormatConverter.Conversion;
 
 namespace FormatConverter;
 
 internal class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
         Properties.ReadArguments(args);
 
-        Transformer transformer = new Transformer();
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        ToDatasetConverter converter = new ToDatasetConverter();
         //transformer.ToDatasetFormat("eurovision.json", "senior");
-        transformer.ToDatasetFormat("junior.json", "junior");
+        await converter.ConvertAsync("junior.json", "junior");
+
+        Console.WriteLine(stopwatch.Elapsed);
     }
 }
 /*

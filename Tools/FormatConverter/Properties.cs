@@ -1,30 +1,19 @@
+using FormatConverter.Conversion;
+
 namespace FormatConverter;
 
 public static class Properties
 {
-    private const char ARGUMENT_PREFFIX = '-';
+    private const string ARGUMENT_PREFFIX = "-";
 
-    private const string START_ARGUMENT = "start";
-    public static int START { get; private set; } = 1956;
+    private const string INPUT_PATH_ARGUMENT = "input";
+    public static string INPUT_PATH { get; private set; }
 
-    private const string END_ARGUMENT = "end";
-    public static int END { get; private set; } = DateTime.Now.Year;
+    private const string OUTPUT_PATH_ARGUMENT = "output";
+    public static string OUTPUT_PATH { get; private set; }
 
-    private const string EUROVISION_SENIOR_ARGUMENT = "senior";
-    public static bool EUROVISION_SENIOR { get; private set; } = false;
-
-    private const string EUROVISION_JUNIOR_ARGUMENT = "junior";
-    public static bool EUROVISION_JUNIOR { get; private set; } = false;
-
-
-    private const string JSON_INDENTED_ARGUMENT = "json_indented";
-    public static bool JSON_INDENTED { get; private set; } = false;
-
-    private const string REUSE_OLD_DATA_ARGUMENT = "reuse";
-    public static bool REUSE_OLD_DATA { get; private set; } = false;
-
-    private const string THROW_EXCEPTION_UNAVAILABLE_DATA_ARGUMENT = "exception_no_data";
-    public static bool THROW_EXCEPTION_UNAVAILABLE_DATA { get; private set; } = false;
+    private const string MODE_ARGUMENT = "mode";
+    public static ConvertionMode MODE { get; private set; }
 
     public static void ReadArguments(string[] arguments)
     {
@@ -35,39 +24,20 @@ public static class Properties
             if (!command.StartsWith(ARGUMENT_PREFFIX))
                 throw new ArgumentException($"Arguments must start with {ARGUMENT_PREFFIX}");
 
-            switch (command.Substring(1).ToLower())
+            switch (command.Substring(ARGUMENT_PREFFIX.Length).ToLower())
             {
-                case START_ARGUMENT:
-                    START = int.Parse(arguments[++i]);
+                case INPUT_PATH_ARGUMENT:
+                    INPUT_PATH = arguments[++i];
                     break;
 
-                case END_ARGUMENT:
-                    END = int.Parse(arguments[++i]);
+                case OUTPUT_PATH_ARGUMENT:
+                    OUTPUT_PATH = arguments[++i];
                     break;
 
-                case EUROVISION_JUNIOR_ARGUMENT:
-                    EUROVISION_JUNIOR = true;
-                    break;
-
-                case EUROVISION_SENIOR_ARGUMENT:
-                    EUROVISION_SENIOR = true;
-                    break;
-
-                case JSON_INDENTED_ARGUMENT:
-                    JSON_INDENTED = true;
-                    break;
-
-                case REUSE_OLD_DATA_ARGUMENT:
-                    REUSE_OLD_DATA = true;
-                    break;
-
-                case THROW_EXCEPTION_UNAVAILABLE_DATA_ARGUMENT:
-                    THROW_EXCEPTION_UNAVAILABLE_DATA = true;
+                case MODE_ARGUMENT:
+                    MODE = (ConvertionMode)int.Parse(arguments[++i]);
                     break;
             }
         }
-
-        if (!EUROVISION_JUNIOR && !EUROVISION_SENIOR)
-            EUROVISION_JUNIOR = EUROVISION_SENIOR = true;
     }
 }

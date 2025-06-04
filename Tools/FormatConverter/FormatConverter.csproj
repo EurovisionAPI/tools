@@ -8,9 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="eurovision.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="junior.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
