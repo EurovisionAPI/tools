@@ -1,6 +1,4 @@
 using System.Data;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using Dataset = Domain.Dataset;
 using Scraper = Domain.Scraper;
@@ -14,8 +12,8 @@ internal class ToDatasetConverter : BaseConverter
         DirectoryInfo folder = Directory.CreateDirectory(folderName);
         using FileStream file = File.Open(contestsFile, FileMode.Open);
         var contests = JsonSerializer.DeserializeAsyncEnumerable<Scraper.Contest>(file, SCRAPER_JSON_OPTIONS);
-        
-        await foreach (var contest in contests)
+
+        await foreach (Scraper.Contest contest in contests)
         {
             ToDatasetContest(folder, contest);
         }
@@ -54,7 +52,7 @@ internal class ToDatasetConverter : BaseConverter
 
     private void StoreContestant(DirectoryInfo parentFolder, Scraper.Contestant contestant)
     {
-        string folderName = $"{contestant.Id}_{contestant.Country.ToLower()}";
+        string folderName = contestant.Id + FILE_NAME_SEPARATOR + contestant.Country.ToLower();
         DirectoryInfo folder = parentFolder.CreateSubdirectory(folderName);
         Dataset.Contestant contestantStore = new Dataset.Contestant()
         {
@@ -105,7 +103,7 @@ internal class ToDatasetConverter : BaseConverter
             if (count > 0)
             {
                 count = fileNameCounts[fileName]--;
-                fileName += $"_{count}";
+                fileName += FILE_NAME_SEPARATOR + count;
             }
 
             StoreLyrics(folder, lyrics, fileName);
@@ -124,17 +122,17 @@ internal class ToDatasetConverter : BaseConverter
         List<object> fileNameParts = [type];
 
         if (lyrics.Languages != null && lyrics.Languages.Length > 0)
-            fileNameParts.Add(string.Join(",", lyrics.Languages));
+            fileNameParts.Add(string.Join(LANGUAGE_SEPARATOR, lyrics.Languages));
 
         if (lyrics.DisplayedLanguages != null && lyrics.DisplayedLanguages.Length > 0)
-            fileNameParts.Add(string.Join(",", lyrics.DisplayedLanguages));
+            fileNameParts.Add(string.Join(LANGUAGE_SEPARATOR, lyrics.DisplayedLanguages));
 
-        return string.Join("_", fileNameParts);
+        return string.Join(FILE_NAME_SEPARATOR, fileNameParts);
     }
 
     private void StoreLyrics(DirectoryInfo folder, Scraper.Lyrics lyrics, string fileName)
     {
-        string fileContent = $"{lyrics.Title}\n\n{lyrics.Content}";
+        string fileContent = lyrics.Title + LYRICS_PARTS_SEPARATOR + lyrics.Content;
         File.WriteAllText(Path.Combine(folder.FullName, fileName + ".txt"), fileContent);
     }
 

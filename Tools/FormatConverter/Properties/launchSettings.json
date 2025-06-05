@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FormatConverter": {
+      "commandName": "Project",
+      "commandLineArgs": "-input \"C:\\Users\\josag\\Documents\\GitHub\\EurovisionAPI\\dataset\\data\\senior\""
+    }
+  }
+}

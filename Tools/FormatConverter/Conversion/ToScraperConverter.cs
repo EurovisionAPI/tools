@@ -1,4 +1,3 @@
-using System.Diagnostics.Metrics;
 using System.Text.Json;
 using Dataset = Domain.Dataset;
 using Scraper = Domain.Scraper;
@@ -9,15 +8,14 @@ internal class ToScraperConverter : BaseConverter
 {
     public void Convert(string contestsFolder, string fileName)
     {
-        IEnumerable<Scraper.Contest> contests = Directory.EnumerateDirectories(contestsFolder)
-            .Select(ToScraperContest);
+        IEnumerable<string> directories = Directory.EnumerateDirectories(contestsFolder);
+        Scraper.Contest[] contests = directories.Select(ToScraperContest).ToArray();
     }
 
     private Scraper.Contest ToScraperContest(string directory)
     {
-        string contestPath = Path.Combine(directory, CONTEST_FILE_NAME);
-        Dataset.Contest datasetContest = ReadJson<Dataset.Contest>(contestPath);
-        int year = int.Parse(Path.GetDirectoryName(directory));
+        Dataset.Contest datasetContest = ReadJson<Dataset.Contest>(directory, CONTEST_FILE_NAME);
+        int year = int.Parse(Path.GetFileName(directory));
         IEnumerable<Scraper.Contestant> contestants = ToScraperContestants(directory);
         IEnumerable<Scraper.Round> rounds = ToScraperRounds(directory);
 
@@ -37,21 +35,20 @@ internal class ToScraperConverter : BaseConverter
         };
     }
 
-    private IEnumerable<Scraper.Contestant> ToScraperContestants(string constestDirectory)
+    private Scraper.Contestant[] ToScraperContestants(string constestDirectory)
     {
         string contestantsPath = Path.Combine(constestDirectory, CONTESTANTS_FOLDER_NAME);
+        IEnumerable<string> directories = Directory.EnumerateDirectories(contestantsPath).ToArray();
 
-        return Directory.EnumerateDirectories(contestantsPath)
-            .Select(ToScraperContestant);
+        return directories.Select(ToScraperContestant).ToArray();
     }
 
     private Scraper.Contestant ToScraperContestant(string directory)
     {
-        string contestantPath = Path.Combine(directory, CONTESTANT_FILE_NAME);
-        Dataset.Contestant datasetContestant = ReadJson<Dataset.Contestant>(contestantPath);
-        string directoryName = Path.GetFileName(directory);
-        int id = int.Parse(directoryName);
-        string country = directoryName;
+        Dataset.Contestant datasetContestant = ReadJson<Dataset.Contestant>(directory, CONTESTANT_FILE_NAME);
+        string[] directoryData = Path.GetFileName(directory).Split(FILE_NAME_SEPARATOR);
+        int id = int.Parse(directoryData[0]);
+        string country = directoryData[1].ToUpper();
         IEnumerable<Scraper.Lyrics> lyrics = ToScraperLyrics(directory);
 
         return new Scraper.Contestant()
@@ -78,25 +75,63 @@ internal class ToScraperConverter : BaseConverter
         };
     }
 
-    private IEnumerable<Scraper.Lyrics> ToScraperLyrics(string constestantDirectory)
+    private Scraper.Lyrics[] ToScraperLyrics(string constestantDirectory)
     {
         string lyricsPath = Path.Combine(constestantDirectory, LYRICS_FOLDER_NAME);
 
-        return Directory.EnumerateDirectories(contestantsPath)
-            .Select(ToScraperRound);
+        return Directory.EnumerateFiles(lyricsPath)
+            .Select(FileToScraperLyrics)
+            .ToArray();
     }
 
-    private IEnumerable<Scraper.Round> ToScraperRounds(string constestDirectory)
+    private Scraper.Lyrics FileToScraperLyrics(string filePath)
+    {
+        string fileName = Path.GetFileNameWithoutExtension(filePath);
+        string fileContent = File.ReadAllText(filePath);
+
+        string[] fileNameData = fileName.Split(FILE_NAME_SEPARATOR);
+        Scraper.LyricsType type = fileNameData[0] switch
+        {
+            "o" => Scraper.LyricsType.Original,
+            "v" => Scraper.LyricsType.Version,
+            _ => Scraper.LyricsType.Translation
+        };
+        string[] languages = fileNameData[1].Split(LANGUAGE_SEPARATOR);
+        string[] displayedLanguages = fileNameData.Length > 2 
+            ? fileNameData[2].Split(LANGUAGE_SEPARATOR)
+            : null;
+
+        string[] fileContentParts = fileContent.Split(LYRICS_PARTS_SEPARATOR);
+        string title = fileContentParts[0];
+        string content = fileContentParts[1];
+
+        return new Scraper.Lyrics()
+        {
+            Type = type,
+            Languages = languages,
+            DisplayedLanguages = displayedLanguages,
+            Title = title,
+            Content = content
+        };
+    }
+
+    private Scraper.Round[] ToScraperRounds(string constestDirectory)
     {
         string contestantsPath = Path.Combine(constestDirectory, ROUNDS_FOLDER_NAME);
 
         return Directory.EnumerateDirectories(contestantsPath)
-            .Select(ToScraperRound);
+            .Select(ToScraperRound)
+            .ToArray();
     }
 
-    private T ReadJson<T>(string file)
+    private Scraper.Round ToScraperRound(string directory)
     {
-        string json = File.ReadAllText(file);
+        return new Scraper.Round();
+    }
+
+    private T ReadJson<T>(string directory, string fileName)
+    {
+        string json = File.ReadAllText(Path.Combine(directory, fileName + ".json"));
 
         return JsonSerializer.Deserialize<T>(json, DATASET_JSON_OPTIONS);
     }
