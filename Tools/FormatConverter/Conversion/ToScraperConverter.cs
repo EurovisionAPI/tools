@@ -10,6 +10,8 @@ internal class ToScraperConverter : BaseConverter
     {
         IEnumerable<string> directories = Directory.EnumerateDirectories(contestsFolder);
         Scraper.Contest[] contests = directories.Select(ToScraperContest).ToArray();
+        string json = JsonSerializer.Serialize(contests);
+        File.WriteAllText(Path.ChangeExtension(fileName, "json"), json);
     }
 
     private Scraper.Contest ToScraperContest(string directory)
@@ -101,9 +103,10 @@ internal class ToScraperConverter : BaseConverter
             ? fileNameData[2].Split(LANGUAGE_SEPARATOR)
             : null;
 
-        string[] fileContentParts = fileContent.Split(LYRICS_PARTS_SEPARATOR);
-        string title = fileContentParts[0];
-        string content = fileContentParts[1];
+        fileContent = fileContent.Replace("\r", string.Empty);
+        int splitIndex = fileContent.IndexOf("\n\n");
+        string title = fileContent.Substring(0, splitIndex);
+        string content = fileContent.Substring(splitIndex + LYRICS_PARTS_SEPARATOR.Length);
 
         return new Scraper.Lyrics()
         {
@@ -117,16 +120,20 @@ internal class ToScraperConverter : BaseConverter
 
     private Scraper.Round[] ToScraperRounds(string constestDirectory)
     {
-        string contestantsPath = Path.Combine(constestDirectory, ROUNDS_FOLDER_NAME);
+        string roundsPath = Path.Combine(constestDirectory, ROUNDS_FOLDER_NAME);
 
-        return Directory.EnumerateDirectories(contestantsPath)
+        return Directory.EnumerateFiles(roundsPath)
             .Select(ToScraperRound)
             .ToArray();
     }
 
-    private Scraper.Round ToScraperRound(string directory)
+    private Scraper.Round ToScraperRound(string filePath)
     {
-        return new Scraper.Round();
+        string json = File.ReadAllText(filePath);
+        Scraper.Round round = JsonSerializer.Deserialize<Scraper.Round>(json);
+        round.Name = Path.GetFileNameWithoutExtension(filePath);
+
+        return round;
     }
 
     private T ReadJson<T>(string directory, string fileName)

@@ -2,7 +2,7 @@
   "profiles": {
     "FormatConverter": {
       "commandName": "Project",
-      "commandLineArgs": "-input \"C:\\Users\\josag\\Documents\\GitHub\\EurovisionAPI\\dataset\\data\\senior\""
+      "commandLineArgs": "-input \"..\\..\\..\\..\\..\\..\\dataset\\data\\senior\" -output senior -mode 1"
     }
   }
 }

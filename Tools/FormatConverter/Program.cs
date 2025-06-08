@@ -8,19 +8,23 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-        CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         Properties.ReadArguments(args);
 
+        Console.WriteLine("Start conversion");
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        ToScraperConverter converter = new ToScraperConverter();
-        converter.Convert(Properties.INPUT_PATH, Properties.OUTPUT_PATH);
+        if (Properties.MODE == ConvertionMode.ToMachine)
+        {
+            ToScraperConverter converter = new ToScraperConverter();
+            converter.Convert(Properties.INPUT_PATH, Properties.OUTPUT_PATH);
+        }
+        else
+        {
+            ToDatasetConverter converter = new ToDatasetConverter();
+            await converter.ConvertAsync(Properties.INPUT_PATH, Properties.OUTPUT_PATH);
+        }
 
-        /*
-        ToDatasetConverter converter = new ToDatasetConverter();
-        //transformer.ToDatasetFormat("eurovision.json", "senior");
-        await converter.ConvertAsync("junior.json", "junior");*/
-
-        Console.WriteLine(stopwatch.Elapsed);
+        Console.WriteLine("Conversion completed, duration: " + stopwatch.Elapsed);
     }
 }

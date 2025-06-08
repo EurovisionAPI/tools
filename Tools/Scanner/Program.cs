@@ -1,5 +1,4 @@
 using Domain.Scraper;
-using Microsoft.VisualBasic;
 
 namespace Scanner;
 
@@ -66,12 +65,12 @@ internal class Program
         if (string.IsNullOrEmpty(contestant.Tone))
             unavailable.Add("Tone");
 
-        if(senior)
+        if (senior)
         {
             if (year <= 1998) // Last year with live orquestra
 
-            if (string.IsNullOrEmpty(contestant.Conductor))
-                noAvailable.Add("Conductor");
+                if (string.IsNullOrEmpty(contestant.Conductor))
+                    noAvailable.Add("Conductor");
         }
     }
 
