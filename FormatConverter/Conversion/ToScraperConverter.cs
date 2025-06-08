@@ -133,7 +133,7 @@ internal class ToScraperConverter : BaseConverter
     private Scraper.Round ToScraperRound(string filePath)
     {
         string json = File.ReadAllText(filePath);
-        Scraper.Round round = JsonSerializer.Deserialize<Scraper.Round>(json);
+        Scraper.Round round = JsonSerializer.Deserialize<Scraper.Round>(json, SCRAPER_JSON_OPTIONS);
         round.Name = Path.GetFileNameWithoutExtension(filePath);
 
         return round;

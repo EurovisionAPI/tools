@@ -4,7 +4,6 @@ namespace Domain.Dataset;
 
 public class Round : IRound<Performance>
 {
-    public string Name { get; set; }
     public DateOnly Date { get; set; }
     public TimeOnly? Time { get; set; }
     public int[] Disqualifieds { get; set; }

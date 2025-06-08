@@ -2,7 +2,7 @@
   "profiles": {
     "FormatConverter": {
       "commandName": "Project",
-      "commandLineArgs": "-input \"..\\..\\..\\..\\..\\..\\dataset\\data\\senior\" -output senior -mode 1"
+      "commandLineArgs": "-input \"..\\..\\..\\..\\..\\dataset\\data\\senior\" -output senior -mode 1"
     }
   }
 }
