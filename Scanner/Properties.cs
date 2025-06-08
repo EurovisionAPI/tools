@@ -7,8 +7,11 @@ public static class Properties
     private const string INPUT_PATH_ARGUMENT = "input";
     public static string INPUT_PATH { get; private set; }
 
-    private const string OUTPUT_PATH_ARGUMENT = "output";
-    public static string OUTPUT_PATH { get; private set; }
+    private const string README_PATH_ARGUMENT = "readme";
+    public static string README_PATH { get; private set; }
+
+    private const string IS_JUNIOR_ARGUMENT = "junior";
+    public static bool IS_JUNIOR { get; private set; }
 
     public static void ReadArguments(string[] arguments)
     {
@@ -25,8 +28,12 @@ public static class Properties
                     INPUT_PATH = arguments[++i];
                     break;
 
-                case OUTPUT_PATH_ARGUMENT:
-                    OUTPUT_PATH = arguments[++i];
+                case IS_JUNIOR_ARGUMENT:
+                    IS_JUNIOR = true;
+                    break;
+
+                case README_PATH_ARGUMENT:
+                    README_PATH = arguments[++i];
                     break;
             }
         }

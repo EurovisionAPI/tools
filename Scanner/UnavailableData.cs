@@ -1,4 +1,4 @@
-﻿namespace Scanner;
+namespace Scanner;
 
 internal class UnavailableData
 {
@@ -6,7 +6,7 @@ internal class UnavailableData
 
     public string Name { get; }
     public IReadOnlyList<string> Fields => _fields;
-    public bool HasUnavailableData => !_fields.IsNullOrEmpty();
+    public virtual bool HasUnavailableData => !_fields.IsNullOrEmpty();
 
     public UnavailableData(string name, IEnumerable<string> fields)
     {
