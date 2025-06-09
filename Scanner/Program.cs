@@ -13,21 +13,34 @@ internal class Program
         Properties.ReadArguments(args);
         _countryCollection = GetCountryCollection();
 
-        string json = File.ReadAllText(Properties.INPUT_PATH);
-        Contest[] contests = JsonSerializer.Deserialize<Contest[]>(json, JsonSerializerOptions.Web);
-        IEnumerable<ContestScanResult> scanResults = contests.Select(ScanContest);
-        WriteScanResult(scanResults);
+        string juniorResult = ScanContests(Properties.JUNIOR_FILENAME, true);
+        string seniorResult = ScanContests(Properties.SENIOR_FILENAME, false);
+        WriteResult(juniorResult, seniorResult);
+    }
+
+    private static T ReadJson<T>(string fileName)
+    {
+        string filePath = Path.Combine(Properties.INPUT_PATH, fileName);
+        string json = File.ReadAllText(fileName);
+
+        return JsonSerializer.Deserialize<T>(json, JsonSerializerOptions.Web);
     }
 
     private static CountryCollection GetCountryCollection()
     {
-        string json = File.ReadAllText("countries.json");
-        Dictionary<string, string> countries = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+        Dictionary<string, string> countries = ReadJson<Dictionary<string, string>>(Properties.COUNTRIES_FILENAME);
 
         return new CountryCollection(countries);
     }
 
-    private static ContestScanResult ScanContest(Contest contest)
+    private static string ScanContests(string fileName, bool isJunior)
+    {
+        Contest[] contests = ReadJson<Contest[]>(fileName);
+        IEnumerable<ContestScanResult> scanResults = contests.Select(contest => ScanContest(contest, isJunior));
+        return ToString(scanResults);
+    }
+
+    private static ContestScanResult ScanContest(Contest contest, bool isJunior)
     {
         ContestScanResult result = new ContestScanResult(contest.Year);
 
@@ -49,7 +62,7 @@ internal class Program
         {
             foreach (Contestant contestant in contest.Contestants)
             {
-                UnavailableData unavailableData = ScanContestant(contest.Year, contestant);
+                UnavailableData unavailableData = ScanContestant(contest.Year, isJunior, contestant);
                 result.AddUnavailableContestant(unavailableData);
             }
         }
@@ -60,7 +73,7 @@ internal class Program
         return result;
     }
 
-    private static UnavailableData ScanContestant(int year, Contestant contestant)
+    private static UnavailableData ScanContestant(int year, bool isJunior, Contestant contestant)
     {
         UnavailableData result = new UnavailableData(contestant.Country);
 
@@ -85,7 +98,7 @@ internal class Program
         if (string.IsNullOrEmpty(contestant.Tone))
             result.Add("Tone");
 
-        if (!Properties.IS_JUNIOR)
+        if (!isJunior)
         {
             // Last year with live orquestra
             if (year <= 1998 && string.IsNullOrEmpty(contestant.Conductor))
@@ -95,7 +108,7 @@ internal class Program
         return result;
     }
 
-    private static void WriteScanResult(IEnumerable<ContestScanResult> results)
+    private static string ToString(IEnumerable<ContestScanResult> results)
     {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -103,17 +116,14 @@ internal class Program
         {
             if (result.HasUnavailableData)
             {
-                ScanResultToString(stringBuilder, result);
+                WriteScanResult(stringBuilder, result);
             }
         }
 
-        string startPattern = Properties.IS_JUNIOR ? "Junior" : "Senior";
-        string text = File.ReadAllText(Properties.README_PATH);
-        text.Replace(startPattern, startPattern + "\n" + stringBuilder.ToString());
-        File.WriteAllText(Properties.README_PATH, text);
+        return stringBuilder.ToString();
     }
 
-    private static void ScanResultToString(StringBuilder stringBuilder, ContestScanResult result)
+    private static void WriteScanResult(StringBuilder stringBuilder, ContestScanResult result)
     {
         int tab = 0;
 
@@ -151,5 +161,13 @@ internal class Program
         }
 
         tab--;
+    }
+
+    private static void WriteResult(string junior, string senior)
+    {
+        string text = File.ReadAllText(Properties.README_PATH);
+        text.Replace(Properties.JUNIOR_PATTERN, $"{Properties.JUNIOR_PATTERN}\n{junior}");
+        text.Replace(Properties.SENIOR_PATTERN, $"{Properties.SENIOR_PATTERN}\n{senior}");
+        File.WriteAllText(Properties.README_PATH, text);
     }
 }
