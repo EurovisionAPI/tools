@@ -1,12 +1,11 @@
-using System.Text;
 using System.Text.Json;
 using Domain.Scraper;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Scanner;
 
 internal class Program
 {
+    private const string EMPTY_MESSAGE = "No missing data";
     private static CountryCollection _countryCollection;
 
     static void Main(string[] args)
@@ -17,7 +16,6 @@ internal class Program
         _countryCollection = GetCountryCollection();
 
         string juniorResult = ScanContests(Properties.JUNIOR_FILENAME, true);
-        Console.WriteLine(juniorResult);
         string seniorResult = ScanContests(Properties.SENIOR_FILENAME, false);
         WriteResult(juniorResult, seniorResult);
     }
@@ -42,10 +40,10 @@ internal class Program
     private static string ScanContests(string fileName, bool isJunior)
     {
         Contest[] contests = ReadJson<Contest[]>(fileName);
-        return ToString(contests.Select(contest => ScanContest(contest, isJunior)));
+        return ToString(contests.Select(ScanContest));
     }
 
-    private static ContestScanResult ScanContest(Contest contest, bool isJunior)
+    private static ContestScanResult ScanContest(Contest contest)
     {
         ContestScanResult result = new ContestScanResult(contest.Year);
 
@@ -67,7 +65,7 @@ internal class Program
         {
             foreach (Contestant contestant in contest.Contestants)
             {
-                UnavailableData unavailableData = ScanContestant(contest.Year, isJunior, contestant);
+                UnavailableData unavailableData = ScanContestant(contest.Year, contestant);
 
                 if (unavailableData.HasUnavailableData)
                     result.AddUnavailableContestant(unavailableData);
@@ -80,7 +78,7 @@ internal class Program
         return result;
     }
 
-    private static UnavailableData ScanContestant(int year, bool isJunior, Contestant contestant)
+    private static UnavailableData ScanContestant(int year, Contestant contestant)
     {
         UnavailableData result = new UnavailableData(contestant.Country);
 
@@ -104,13 +102,6 @@ internal class Program
 
         if (string.IsNullOrEmpty(contestant.Tone))
             result.Add("Tone");
-
-        if (!isJunior)
-        {
-            // Last year with live orquestra
-            if (year <= 1998 && string.IsNullOrEmpty(contestant.Conductor))
-                result.Add("Conductor");
-        }
 
         return result;
     }
@@ -176,8 +167,13 @@ internal class Program
 
     private static void WriteResult(string junior, string senior)
     {
+        if (string.IsNullOrEmpty(junior))
+            junior = EMPTY_MESSAGE;
+
+        if (string.IsNullOrEmpty(senior))
+            senior = EMPTY_MESSAGE;
+
         string text = File.ReadAllText(Properties.README_PATH);
-        Console.WriteLine(text);
         text = ReplaceSection(text, Properties.JUNIOR_SECTION, junior);
         text = ReplaceSection(text, Properties.SENIOR_SECTION, senior);
 
@@ -192,16 +188,8 @@ internal class Program
         int startIndex = text.IndexOf(startTag);
         int endIndex = text.IndexOf(endTag);
 
-        Console.WriteLine(startTag);
-        Console.WriteLine(endTag);
-
         if (startIndex == -1 || endIndex == -1 || endIndex <= startIndex)
-        {
-            Console.WriteLine(sectionName);
-            Console.WriteLine("{0}, {1}, {2}", startIndex, endIndex, endIndex <= startIndex);
-            
             return text; // Section not found, or is malformed
-        }
 
         startIndex += startTag.Length;
 
