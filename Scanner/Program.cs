@@ -10,7 +10,10 @@ internal class Program
 
     static void Main(string[] args)
     {
+        Console.WriteLine("Arguments: [{0}]", string.Join(", ", args));
         Properties.ReadArguments(args);
+        Console.WriteLine("Input path: " + Properties.INPUT_PATH);
+
         _countryCollection = GetCountryCollection();
 
         string juniorResult = ScanContests(Properties.JUNIOR_FILENAME, true);
@@ -29,7 +32,8 @@ internal class Program
 
     private static CountryCollection GetCountryCollection()
     {
-        Dictionary<string, string> countries = ReadJson<Dictionary<string, string>>(Properties.COUNTRIES_FILENAME);
+        string fileName = Properties.COUNTRIES_FILENAME;
+        Dictionary<string, string> countries = ReadJson<Dictionary<string, string>>(fileName);
 
         return new CountryCollection(countries);
     }
