@@ -192,7 +192,12 @@ internal class Program
         int endIndex = text.IndexOf(endTag);
 
         if (startIndex == -1 || endIndex == -1 || endIndex <= startIndex)
+        {
+            Console.WriteLine(sectionName);
+            Console.WriteLine("{0}, {1}, {2}", startIndex, endIndex, endIndex <= startIndex);
+            
             return text; // Section not found, or is malformed
+        }
 
         startIndex += startTag.Length;
 
