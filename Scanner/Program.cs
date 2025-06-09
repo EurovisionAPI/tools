@@ -177,6 +177,7 @@ internal class Program
     private static void WriteResult(string junior, string senior)
     {
         string text = File.ReadAllText(Properties.README_PATH);
+        Console.WriteLine(text);
         text = ReplaceSection(text, Properties.JUNIOR_SECTION, junior);
         text = ReplaceSection(text, Properties.SENIOR_SECTION, senior);
 
@@ -190,6 +191,9 @@ internal class Program
 
         int startIndex = text.IndexOf(startTag);
         int endIndex = text.IndexOf(endTag);
+
+        Console.WriteLine(startTag);
+        Console.WriteLine(endTag);
 
         if (startIndex == -1 || endIndex == -1 || endIndex <= startIndex)
         {
