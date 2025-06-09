@@ -26,7 +26,7 @@ internal class Program
         fileName = Path.ChangeExtension(fileName, "json");
         string filePath = Path.Combine(Properties.INPUT_PATH, fileName);
         Console.WriteLine("Read Json: " + filePath);
-        string json = File.ReadAllText(fileName);
+        string json = File.ReadAllText(filePath);
 
         return JsonSerializer.Deserialize<T>(json, JsonSerializerOptions.Web);
     }
