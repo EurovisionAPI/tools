@@ -20,6 +20,7 @@ internal class Program
 
     private static T ReadJson<T>(string fileName)
     {
+        fileName = Path.ChangeExtension(fileName, "json");
         string filePath = Path.Combine(Properties.INPUT_PATH, fileName);
         string json = File.ReadAllText(fileName);
 
