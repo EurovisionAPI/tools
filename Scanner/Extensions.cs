@@ -4,7 +4,7 @@ internal static class Extensions
 {
     public static bool IsNullOrEmpty<TSource>(this IEnumerable<TSource> source)
     {
-        return source != null && source.Any();
+        return source != null && !source.Any();
     }
 
     public static string IsoCountryCodeToFlagEmoji(this string country)

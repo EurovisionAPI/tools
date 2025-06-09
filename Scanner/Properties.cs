@@ -5,7 +5,7 @@ public static class Properties
     private const string ARGUMENT_PREFFIX = "-";
 
     private const string INPUT_PATH_ARGUMENT = "input";
-    public static string INPUT_PATH { get; private set; }
+    public static string INPUT_PATH { get; private set; } = string.Empty;
 
     private const string COUNTRIES_FILENAME_ARGUMENT = "countries";
     public static string COUNTRIES_FILENAME { get; private set; } = "countries";
@@ -13,14 +13,14 @@ public static class Properties
     private const string JUNIOR_FILENAME_ARGUMENT = "junior";
     public static string JUNIOR_FILENAME { get; private set; } = "junior";
 
-    private const string JUNIOR_PATTERN_ARGUMENT = "junior_pattern";
-    public static string JUNIOR_PATTERN { get; private set; } = "Junior";
+    private const string JUNIOR_SECTION_ARGUMENT = "junior-section";
+    public static string JUNIOR_SECTION { get; private set; } = "JUNIOR";
 
     private const string SENIOR_FILENAME_ARGUMENT = "senior";
     public static string SENIOR_FILENAME { get; private set; } = "senior";
 
-    private const string SENIOR_PATTERN_ARGUMENT = "senior_pattern";
-    public static string SENIOR_PATTERN { get; private set; } = "Senior";
+    private const string SENIOR_SECTION_ARGUMENT = "senior_section";
+    public static string SENIOR_SECTION { get; private set; } = "SENIOR";
 
     private const string README_PATH_ARGUMENT = "readme";
     public static string README_PATH { get; private set; }
@@ -49,12 +49,12 @@ public static class Properties
                     JUNIOR_FILENAME = arguments[++i];
                     break;
 
-                case JUNIOR_PATTERN_ARGUMENT:
-                    JUNIOR_PATTERN = arguments[++i];
+                case JUNIOR_SECTION_ARGUMENT:
+                    JUNIOR_SECTION = arguments[++i];
                     break;
 
-                case SENIOR_PATTERN_ARGUMENT:
-                    SENIOR_PATTERN = arguments[++i];
+                case SENIOR_SECTION_ARGUMENT:
+                    SENIOR_SECTION = arguments[++i];
                     break;
 
                 case SENIOR_FILENAME_ARGUMENT:

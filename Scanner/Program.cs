@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Domain.Scraper;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Scanner;
 
@@ -12,7 +13,6 @@ internal class Program
     {
         Console.WriteLine("Arguments: [{0}]", string.Join(", ", args));
         Properties.ReadArguments(args);
-        Console.WriteLine("Input path: " + Properties.INPUT_PATH);
 
         _countryCollection = GetCountryCollection();
 
@@ -25,7 +25,6 @@ internal class Program
     {
         fileName = Path.ChangeExtension(fileName, "json");
         string filePath = Path.Combine(Properties.INPUT_PATH, fileName);
-        Console.WriteLine("Read Json: " + filePath);
         string json = File.ReadAllText(filePath);
 
         return JsonSerializer.Deserialize<T>(json, JsonSerializerOptions.Web);
@@ -42,8 +41,7 @@ internal class Program
     private static string ScanContests(string fileName, bool isJunior)
     {
         Contest[] contests = ReadJson<Contest[]>(fileName);
-        IEnumerable<ContestScanResult> scanResults = contests.Select(contest => ScanContest(contest, isJunior));
-        return ToString(scanResults);
+        return ToString(contests.Select(contest => ScanContest(contest, isJunior)));
     }
 
     private static ContestScanResult ScanContest(Contest contest, bool isJunior)
@@ -69,7 +67,9 @@ internal class Program
             foreach (Contestant contestant in contest.Contestants)
             {
                 UnavailableData unavailableData = ScanContestant(contest.Year, isJunior, contestant);
-                result.AddUnavailableContestant(unavailableData);
+
+                if (unavailableData.HasUnavailableData)
+                    result.AddUnavailableContestant(unavailableData);
             }
         }
 
@@ -116,27 +116,31 @@ internal class Program
 
     private static string ToString(IEnumerable<ContestScanResult> results)
     {
-        StringBuilder stringBuilder = new StringBuilder();
+        using StringWriter stringWriter = new StringWriter()
+        {
+            NewLine = "\n"
+        };
 
         foreach (ContestScanResult result in results)
         {
             if (result.HasUnavailableData)
             {
-                WriteScanResult(stringBuilder, result);
+                WriteScanResult(stringWriter, result);
+                stringWriter.WriteLine();
             }
         }
 
-        return stringBuilder.ToString();
+        return stringWriter.ToString();
     }
 
-    private static void WriteScanResult(StringBuilder stringBuilder, ContestScanResult result)
+    private static void WriteScanResult(StringWriter writer, ContestScanResult result)
     {
         int tab = 0;
 
         void WriteLine(string text)
         {
-            stringBuilder.Append(new string('\t', tab));
-            stringBuilder.AppendLine(text);
+            writer.Write(new string(' ', tab * 2));
+            writer.WriteLine(text);
         }
 
         WriteLine($"#### 📅 {result.Name}");
@@ -171,10 +175,29 @@ internal class Program
 
     private static void WriteResult(string junior, string senior)
     {
-        string text = File.ReadAllText(Properties.README_PATH)
-            .Replace(Properties.JUNIOR_PATTERN, $"{Properties.JUNIOR_PATTERN}\n{junior}")
-            .Replace(Properties.SENIOR_PATTERN, $"{Properties.SENIOR_PATTERN}\n{senior}");
+        string text = File.ReadAllText(Properties.README_PATH);
+        text = ReplaceSection(text, Properties.JUNIOR_SECTION, junior);
+        text = ReplaceSection(text, Properties.SENIOR_SECTION, senior);
 
         File.WriteAllText(Properties.README_PATH, text);
+    }
+
+    static string ReplaceSection(string text, string sectionName, string newContent)
+    {
+        string startTag = $"<!-- {sectionName}-START -->";
+        string endTag = $"<!-- {sectionName}-END -->";
+
+        int startIndex = text.IndexOf(startTag);
+        int endIndex = text.IndexOf(endTag);
+
+        if (startIndex == -1 || endIndex == -1 || endIndex <= startIndex)
+            return text; // Section not found, or is malformed
+
+        startIndex += startTag.Length;
+
+        string before = text.Substring(0, startIndex);
+        string after = text.Substring(endIndex);
+
+        return $"{before}\n{newContent.Trim('\n', ' ')}\n{after}";
     }
 }

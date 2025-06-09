@@ -6,7 +6,7 @@ internal class UnavailableData
 
     public string Name { get; }
     public IReadOnlyList<string> Fields => _fields;
-    public virtual bool HasUnavailableData => !_fields.IsNullOrEmpty();
+    public virtual bool HasUnavailableData => _fields.Count > 0;
 
     public UnavailableData(string name, IEnumerable<string> fields)
     {

@@ -9,7 +9,8 @@ internal class ToScraperConverter : BaseConverter
     public void Convert(string contestsFolder, string fileName)
     {
         IEnumerable<string> directories = Directory.EnumerateDirectories(contestsFolder);
-        Scraper.Contest[] contests = directories.Select(ToScraperContest).ToArray();
+        IEnumerable<Scraper.Contest> contests = directories.Select(ToScraperContest)
+            .OrderBy(contest => contest.Year);
 
         string json = JsonSerializer.Serialize(contests);
         string filePath = Path.ChangeExtension(fileName, "json");
