@@ -17,6 +17,7 @@ internal class Program
         _countryCollection = GetCountryCollection();
 
         string juniorResult = ScanContests(Properties.JUNIOR_FILENAME, true);
+        Console.WriteLine(juniorResult);
         string seniorResult = ScanContests(Properties.SENIOR_FILENAME, false);
         WriteResult(juniorResult, seniorResult);
     }
