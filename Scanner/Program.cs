@@ -171,9 +171,10 @@ internal class Program
 
     private static void WriteResult(string junior, string senior)
     {
-        string text = File.ReadAllText(Properties.README_PATH);
-        text.Replace(Properties.JUNIOR_PATTERN, $"{Properties.JUNIOR_PATTERN}\n{junior}");
-        text.Replace(Properties.SENIOR_PATTERN, $"{Properties.SENIOR_PATTERN}\n{senior}");
+        string text = File.ReadAllText(Properties.README_PATH)
+            .Replace(Properties.JUNIOR_PATTERN, $"{Properties.JUNIOR_PATTERN}\n{junior}")
+            .Replace(Properties.SENIOR_PATTERN, $"{Properties.SENIOR_PATTERN}\n{senior}");
+
         File.WriteAllText(Properties.README_PATH, text);
     }
 }
