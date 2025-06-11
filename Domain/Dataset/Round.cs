@@ -1,8 +1,9 @@
 using Domain.Interfaces;
+using Domain.Shared;
 
 namespace Domain.Dataset;
 
-public class Round : IRound<Performance>
+public class Round : IRound
 {
     public DateOnly Date { get; set; }
     public TimeOnly? Time { get; set; }

@@ -1,9 +1,11 @@
+using Domain.Shared;
+
 namespace Domain.Interfaces;
 
-public interface IRound<TPerformance> where TPerformance : IPerformance
+public interface IRound
 {
     DateOnly Date { get; set; }
     TimeOnly? Time { get; set; }
     int[] Disqualifieds { get; set; }
-    IEnumerable<TPerformance> Performances { get; }
+    IEnumerable<Performance> Performances { get; }
 }

@@ -11,6 +11,6 @@ public class Contest : IContest
     public string IntendedCountry { get; set; }
     public string Slogan { get; set; }
     public string LogoUrl { get; set; }
-    public string[] Presenters { get; set; }
     public string[] Broadcasters { get; set; }
+    public string[] Presenters { get; set; }
 }

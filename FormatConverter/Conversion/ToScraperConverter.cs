@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Domain.Shared;
 using Dataset = Domain.Dataset;
 using Scraper = Domain.Scraper;
 
@@ -22,8 +23,8 @@ internal class ToScraperConverter : BaseConverter
     {
         Dataset.Contest datasetContest = ReadJson<Dataset.Contest>(directory, CONTEST_FILE_NAME);
         int year = int.Parse(Path.GetFileName(directory));
-        IEnumerable<Scraper.Contestant> contestants = ToScraperContestants(directory);
-        IEnumerable<Scraper.Round> rounds = ToScraperRounds(directory);
+        Scraper.Contestant[] contestants = ToScraperContestants(directory);
+        Scraper.Round[] rounds = ToScraperRounds(directory);
 
         return new Scraper.Contest()
         {
@@ -55,7 +56,7 @@ internal class ToScraperConverter : BaseConverter
         string[] directoryData = Path.GetFileName(directory).Split(FILE_NAME_SEPARATOR);
         int id = int.Parse(directoryData[0]);
         string country = directoryData[1].ToUpper();
-        IEnumerable<Scraper.Lyrics> lyrics = ToScraperLyrics(directory);
+        Scraper.Lyrics[] lyrics = ToScraperLyrics(directory);
 
         return new Scraper.Contestant()
         {

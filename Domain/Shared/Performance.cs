@@ -1,8 +1,6 @@
-using Domain.Interfaces;
+namespace Domain.Shared;
 
-namespace Domain.Dataset;
-
-public class Performance : IPerformance<Score>
+public class Performance
 {
     public int ContestantId { get; set; }
     public int Running { get; set; }

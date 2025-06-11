@@ -9,6 +9,7 @@ public interface IContest
     string IntendedCountry { get; set; }
     string Slogan { get; set; }
     string LogoUrl { get; set; }
-    string[] Presenters { get; set; }
     string[] Broadcasters { get; set; }
+    string[] Presenters { get; set; }
+    
 }

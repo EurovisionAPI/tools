@@ -1,8 +1,9 @@
 using Domain.Interfaces;
+using Domain.Shared;
 
 namespace Domain.Scraper;
 
-public class Round : IRound<Performance>
+public class Round : IRound
 {
     public string Name { get; set; }
     public DateOnly Date { get; set; }

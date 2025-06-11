@@ -1,8 +1,6 @@
-using Domain.Interfaces;
+namespace Domain.Shared;
 
-namespace Domain.Scraper;
-
-public class Score : IScore
+public class Score
 {
     public string Name { get; set; }
     public int Points { get; set; }

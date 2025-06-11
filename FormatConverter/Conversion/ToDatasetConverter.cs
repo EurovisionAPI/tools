@@ -1,5 +1,6 @@
 using System.Data;
 using System.Text.Json;
+using Domain.Shared;
 using Dataset = Domain.Dataset;
 using Scraper = Domain.Scraper;
 
@@ -153,14 +154,15 @@ internal class ToDatasetConverter : BaseConverter
             Date = round.Date,
             Time = round.Time,
             Disqualifieds = round.Disqualifieds,
-            Performances = round.Performances?.Select(performance => new Dataset.Performance
+            Performances = round.Performances?.Select(performance => new Performance
             {
                 ContestantId = performance.ContestantId,
                 Running = performance.Running,
                 Place = performance.Place,
-                Scores = performance.Scores.Select(score => new Dataset.Score
+                Scores = performance.Scores.Select(score => new Score
                 {
                     Name = score.Name,
+                    Points = score.Points,
                     Votes = score.Votes,
                 })
             })
