@@ -14,8 +14,8 @@ internal class Program
 
     static void Main(string[] args)
     {
-        //FixContests("senior.json");
-        FixContests("junior.json");
+        FixContests("senior.json");
+        //FixContests("junior.json");
     }
 
     private static void FixContests(string filename)
@@ -31,15 +31,18 @@ internal class Program
             {
                 Round yesRound = yes.Rounds.First(r => r.Name == noRound.Name);
 
-                foreach (Performance noPerf in noRound.Performances)
+                if (noRound.Performances != null)
                 {
-                    Performance yesPerf = yesRound.Performances.First(p => p.ContestantId == noPerf.ContestantId);
-
-                    foreach (Score noScore in noPerf.Scores)
+                    foreach (Performance noPerf in noRound.Performances)
                     {
-                        Score yesScore = yesPerf.Scores.First(s => noScore.Name.Contains(s.Name));
+                        Performance yesPerf = yesRound.Performances.First(p => p.ContestantId == noPerf.ContestantId);
 
-                        noScore.Points = yesScore.Points;
+                        foreach (Score noScore in noPerf.Scores)
+                        {
+                            Score yesScore = yesPerf.Scores.First(s => noScore.Name.Contains(s.Name));
+
+                            noScore.Points = yesScore.Points;
+                        }
                     }
                 }
             }
