@@ -3,6 +3,10 @@
     "FormatConverter": {
       "commandName": "Project",
       "commandLineArgs": "-input \"..\\..\\..\\..\\..\\dataset\\data\\senior\" -output senior -mode 1"
+    },
+    "Perfil 1": {
+      "commandName": "Project",
+      "commandLineArgs": "-input \"../../../../PointsFixer/bin/Debug/net9.0/junior.json\" -output \"..\\..\\..\\..\\..\\dataset\\data\\junior\" -mode 0"
     }
   }
 }

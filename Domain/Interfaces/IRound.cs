@@ -7,5 +7,5 @@ public interface IRound
     DateOnly Date { get; set; }
     TimeOnly? Time { get; set; }
     int[] Disqualifieds { get; set; }
-    IEnumerable<Performance> Performances { get; }
+    Performance[] Performances { get; }
 }

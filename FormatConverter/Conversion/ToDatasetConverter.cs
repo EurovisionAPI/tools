@@ -165,7 +165,7 @@ internal class ToDatasetConverter : BaseConverter
                     Points = score.Points,
                     Votes = score.Votes,
                 })
-            })
+            }).ToArray()
         };
 
         Save(roundStore, folder, round.Name);
