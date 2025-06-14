@@ -35,8 +35,8 @@ internal class ToScraperConverter : BaseConverter
             IntendedCountry = datasetContest.IntendedCountry,
             Slogan = datasetContest.Slogan,
             LogoUrl = datasetContest.LogoUrl,
-            Presenters = datasetContest.Presenters,
             Broadcasters = datasetContest.Broadcasters,
+            Presenters = datasetContest.Presenters,
             Contestants = contestants,
             Rounds = rounds
         };
@@ -63,22 +63,26 @@ internal class ToScraperConverter : BaseConverter
             Id = id,
             Country = country,
             Artist = datasetContestant.Artist,
-            ArtistPeople = datasetContestant.ArtistPeople,
             Song = datasetContestant.Song,
-            Lyrics = lyrics,
             VideoUrls = datasetContestant.VideoUrls,
-            Dancers = datasetContestant.Dancers,
-            Backings = datasetContestant.Backings,
-            Composers = datasetContestant.Composers,
-            Lyricists = datasetContestant.Lyricists,
-            Writers = datasetContestant.Writers,
-            Conductor = datasetContestant.Conductor,
-            StageDirector = datasetContestant.StageDirector,
+            Lyrics = lyrics,
             Bpm = datasetContestant.Bpm,
             Tone = datasetContestant.Tone,
+
+            ArtistPeople = datasetContestant.ArtistPeople,
+            Backings = datasetContestant.Backings,
+            Dancers = datasetContestant.Dancers,
+            StageDirector = datasetContestant.StageDirector,
+
+            Composers = datasetContestant.Composers,
+            Conductor = datasetContestant.Conductor,
+            Lyricists = datasetContestant.Lyricists,
+            Writers = datasetContestant.Writers,            
+            
             Broadcaster = datasetContestant.Broadcaster,
-            Spokesperson = datasetContestant.Spokesperson,
-            Commentators = datasetContestant.Commentators
+            Commentators = datasetContestant.Commentators,
+            Jury = datasetContestant.Jury,
+            Spokesperson = datasetContestant.Spokesperson
         };
     }
 
