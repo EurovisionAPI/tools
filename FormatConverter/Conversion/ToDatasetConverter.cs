@@ -59,22 +59,26 @@ internal class ToDatasetConverter : BaseConverter
         {
             Id = contestant.Id,
             Country = contestant.Country,
-            Broadcaster = contestant.Broadcaster,
             Artist = contestant.Artist,
-            ArtistPeople = contestant.ArtistPeople,
             Song = contestant.Song,
             VideoUrls = contestant.VideoUrls,
             Bpm = contestant.Bpm,
             Tone = contestant.Tone,
+
+            ArtistPeople = contestant.ArtistPeople,
             Backings = contestant.Backings,
-            Commentators = contestant.Commentators,
+            Dancers = contestant.Dancers,
+            StageDirector = contestant.StageDirector,
+
             Composers = contestant.Composers,
             Conductor = contestant.Conductor,
-            Dancers = contestant.Dancers,
             Lyricists = contestant.Lyricists,
-            Spokesperson = contestant.Spokesperson,
-            StageDirector = contestant.StageDirector,
             Writers = contestant.Writers,
+
+            Broadcaster = contestant.Broadcaster,          
+            Commentators = contestant.Commentators,
+            Jury = contestant.Jury,
+            Spokesperson = contestant.Spokesperson
         };
 
         Save(contestantStore, folder, CONTESTANT_FILE_NAME);

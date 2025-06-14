@@ -1,6 +1,5 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Domain.Scraper;
-using Domain.Shared;
 
 namespace PointsFixer;
 
@@ -19,6 +18,26 @@ internal class Program
     }
 
     private static void FixContests(string filename)
+    {
+        Contest[] allno = ReadJson<Contest[]>("no", filename);
+        Contest[] allyes = ReadJson<Contest[]>("yes", filename);
+
+        foreach (Contest no in allno)
+        {
+            Contest yes = allyes.First(c => c.Year == no.Year);
+
+            foreach (Contestant noContestant in no.Contestants)
+            {
+                Contestant yesContestant = yes.Contestants.First(c => c.Country == noContestant.Country && c.Id == noContestant.Id);
+                noContestant.Jury = yesContestant.Jury;
+            }
+        }
+
+        string json = JsonSerializer.Serialize(allno, JSON_OPTIONS);
+        File.WriteAllText(filename, json);
+    }
+
+    /*private static void FixContests(string filename)
     {
         Contest[] noPoints = ReadJson<Contest[]>("no", filename);
         Contest[] points = ReadJson<Contest[]>("si", filename);
@@ -50,7 +69,7 @@ internal class Program
 
         string json = JsonSerializer.Serialize(noPoints, JSON_OPTIONS);
         File.WriteAllText(filename, json);
-    }
+    }*/
 
     private static T ReadJson<T>(string folder, string filename)
     {
