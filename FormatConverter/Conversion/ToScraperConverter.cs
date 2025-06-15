@@ -6,7 +6,7 @@ namespace FormatConverter.Conversion;
 
 internal class ToScraperConverter : BaseConverter
 {
-    private const string LOGOS_URL = "https://raw.githubusercontent.com/EurovisionAPI/dataset/main/logos/";
+    private const string LOGOS_URL = "https://raw.githubusercontent.com/EurovisionAPI/dataset/main/images/logos/";
     private const string LOGO_FORMAT = "png";
 
     public void Convert(string contestsFolder, string fileName)
