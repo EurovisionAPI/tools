@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Domain.Shared;
 using Dataset = Domain.Dataset;
 using Scraper = Domain.Scraper;
 
@@ -7,6 +6,9 @@ namespace FormatConverter.Conversion;
 
 internal class ToScraperConverter : BaseConverter
 {
+    private const string LOGOS_URL = "https://raw.githubusercontent.com/EurovisionAPI/dataset/main/logos/";
+    private const string LOGO_FORMAT = "png";
+
     public void Convert(string contestsFolder, string fileName)
     {
         IEnumerable<string> directories = Directory.EnumerateDirectories(contestsFolder);
@@ -21,10 +23,12 @@ internal class ToScraperConverter : BaseConverter
 
     private Scraper.Contest ToScraperContest(string directory)
     {
+        DirectoryInfo directoryInfo = new DirectoryInfo(directory);
         Dataset.Contest datasetContest = ReadJson<Dataset.Contest>(directory, CONTEST_FILE_NAME);
-        int year = int.Parse(Path.GetFileName(directory));
+        int year = int.Parse(directoryInfo.Name);
         Scraper.Contestant[] contestants = ToScraperContestants(directory);
         Scraper.Round[] rounds = ToScraperRounds(directory);
+        string logosFolder = $"{directoryInfo.Parent.Name}/{directoryInfo.Name}";
 
         return new Scraper.Contest()
         {
@@ -34,7 +38,7 @@ internal class ToScraperConverter : BaseConverter
             Country = datasetContest.Country,
             IntendedCountry = datasetContest.IntendedCountry,
             Slogan = datasetContest.Slogan,
-            LogoUrl = datasetContest.LogoUrl,
+            LogoUrl = $"{LOGOS_URL}{logosFolder}.{LOGO_FORMAT}",
             Broadcasters = datasetContest.Broadcasters,
             Presenters = datasetContest.Presenters,
             Contestants = contestants,
@@ -77,8 +81,8 @@ internal class ToScraperConverter : BaseConverter
             Composers = datasetContestant.Composers,
             Conductor = datasetContestant.Conductor,
             Lyricists = datasetContestant.Lyricists,
-            Writers = datasetContestant.Writers,            
-            
+            Writers = datasetContestant.Writers,
+
             Broadcaster = datasetContestant.Broadcaster,
             Commentators = datasetContestant.Commentators,
             Jury = datasetContestant.Jury,
@@ -108,7 +112,7 @@ internal class ToScraperConverter : BaseConverter
             _ => Scraper.LyricsType.Translation
         };
         string[] languages = fileNameData[1].Split(LANGUAGE_SEPARATOR);
-        string[] displayedLanguages = fileNameData.Length > 2 
+        string[] displayedLanguages = fileNameData.Length > 2
             ? fileNameData[2].Split(LANGUAGE_SEPARATOR)
             : null;
 

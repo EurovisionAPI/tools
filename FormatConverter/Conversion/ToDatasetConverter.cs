@@ -25,13 +25,11 @@ internal class ToDatasetConverter : BaseConverter
         DirectoryInfo folder = parentFolder.CreateSubdirectory(scraperContest.Year.ToString());
         Dataset.Contest datasetContest = new Dataset.Contest()
         {
-            Year = scraperContest.Year,
             Arena = scraperContest.Arena,
             City = scraperContest.City,
             Country = scraperContest.Country,
             IntendedCountry = scraperContest.IntendedCountry,
             Slogan = scraperContest.Slogan,
-            LogoUrl = scraperContest.LogoUrl,
             Presenters = scraperContest.Presenters,
             Broadcasters = scraperContest.Broadcasters
         };
