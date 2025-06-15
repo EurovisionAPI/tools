@@ -51,7 +51,9 @@ internal class ToScraperConverter : BaseConverter
         string contestantsPath = Path.Combine(constestDirectory, CONTESTANTS_FOLDER_NAME);
         IEnumerable<string> directories = Directory.EnumerateDirectories(contestantsPath).ToArray();
 
-        return directories.Select(ToScraperContestant).ToArray();
+        return directories.Select(ToScraperContestant)
+            .OrderBy(contestant => contestant.Id)
+            .ToArray();
     }
 
     private Scraper.Contestant ToScraperContestant(string directory)
@@ -96,6 +98,7 @@ internal class ToScraperConverter : BaseConverter
 
         return Directory.EnumerateFiles(lyricsPath)
             .Select(FileToScraperLyrics)
+            .OrderBy(lyrics => lyrics.Type)
             .ToArray();
     }
 
@@ -145,6 +148,7 @@ internal class ToScraperConverter : BaseConverter
         string json = File.ReadAllText(filePath);
         Scraper.Round round = JsonSerializer.Deserialize<Scraper.Round>(json, SCRAPER_JSON_OPTIONS);
         round.Name = Path.GetFileNameWithoutExtension(filePath);
+        Array.Sort(round.Performances, (p1, p2) => p1.ContestantId.CompareTo(p2.ContestantId));
 
         return round;
     }
