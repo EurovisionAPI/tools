@@ -149,7 +149,7 @@ internal class ToScraperConverter : BaseConverter
         Scraper.Round round = JsonSerializer.Deserialize<Scraper.Round>(json, SCRAPER_JSON_OPTIONS);
         round.Name = Path.GetFileNameWithoutExtension(filePath);
 
-        // The 2020 edition was canceled and has no performances.
+        // The 2020 edition was canceled and it has not performances.
         if (round.Performances is not null)
         {
             Array.Sort(round.Performances, (p1, p2) => p1.ContestantId.CompareTo(p2.ContestantId));
