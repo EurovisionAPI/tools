@@ -2,15 +2,15 @@
   "profiles": {
     "FormatConverter": {
       "commandName": "Project",
-      "commandLineArgs": "-input \"..\\..\\..\\..\\..\\dataset\\data\\senior\" -output senior2 -mode 1"
-    },
-    "Perfil 1": {
-      "commandName": "Project",
-      "commandLineArgs": "-input \"../../../../PointsFixer/bin/Debug/net9.0/senior.json\" -output \"..\\..\\..\\..\\..\\dataset\\data\\senior\" -mode 0"
+      "commandLineArgs": "-input \"..\\..\\..\\..\\..\\dataset\\data\\junior\" -output junior -mode 0"
     },
     "Perfil 2": {
       "commandName": "Project",
       "commandLineArgs": "-input senior.json -output \"..\\..\\..\\..\\..\\dataset\\data\\senior\" -mode 0"
+    },
+    "Convert to human": {
+      "commandName": "Project",
+      "commandLineArgs": "-input junior.json -output junior -mode 0"
     }
   }
 }
