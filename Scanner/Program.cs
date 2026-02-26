@@ -91,7 +91,7 @@ internal class Program
         if (contestant.ArtistPeople.IsNullOrEmpty())
             result.Add("Artist people");
 
-        if (contestant.Lyrics.IsNullOrEmpty())
+        if (contestant.Lyrics.IsNullOrEmpty() || contestant.Lyrics.Any(lyrics => string.IsNullOrEmpty(lyrics.Content)))
             result.Add("Lyrics");
 
         if (contestant.VideoUrls.IsNullOrEmpty())
